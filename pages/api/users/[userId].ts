@@ -15,6 +15,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   switch (req.method) {
+
     case 'GET':
       Users.findOne({ 'login.uuid': userId }, function (err, doc: User) {
         if (err) return console.error(err);
@@ -40,8 +41,32 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
       })
       break;
 
+    case 'PUT':
+      const decodedUserObj = JSON.parse(decodeURI(req.query.userObj as string));
+
+      if (decodedUserObj.hasOwnProperty('login')) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.status(403).send('Não é possível alterar os dados de login desta forma.');
+      } else {
+        Users.findOneAndUpdate({ 'login.uuid': userId }, decodedUserObj, { new: true, omitUndefined: true, lean: true }, function (err, doc) {
+          if (err) return console.error(err);
+          if (doc) {
+            delete (doc as unknown as User).login;
+            res.status(200).json(doc);
+          } else {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.status(404).send('Usuário não encontrado');
+          }
+        })
+      }
+      break;
 
     default: break;
   }
+
+  // const input = encodeURI('{"state":"Ceará"}')
+  // console.log(input)
+  // const output = decodeURI(input)
+  // console.log(JSON.parse(output))
 
 }
