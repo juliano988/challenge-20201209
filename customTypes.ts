@@ -67,3 +67,10 @@ export type TableItem = {
   address: string,
   id: string
 }
+
+export type PaginationMeta = {
+  page: number,
+  pages: number,
+  pageUsers: number,
+  totalUsers: number,
+}

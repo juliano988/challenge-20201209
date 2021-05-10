@@ -53,7 +53,8 @@ export default function UsersTable() {
   ];
 
   const [tableContent, settableContent] = useState([]);
-  const [loading, setloading] = useState<boolean>(true)
+  const [loading, setloading] = useState<boolean>(true);
+  const [tablePage, settablePage] = useState<number>(1);
 
   useEffect(function () {
     fetch('/api/users').then(function (res) {
@@ -69,7 +70,7 @@ export default function UsersTable() {
         tempObj.birthDate = new Date(user.dob.date).toLocaleDateString('pt-BR');
         tempObj.phone = user.phone;
         tempObj.nationality = user.nat;
-        tempObj.address = user.location.street.name +' nº'+ user.location.street.number +', '+ user.location.city +' - '+user.location.state;
+        tempObj.address = user.location.street.name + ' nº' + user.location.street.number + ', ' + user.location.city + ' - ' + user.location.state;
         tempObj.id = user.login.uuid;
         tableContent.push(tempObj)
       })
@@ -91,7 +92,7 @@ export default function UsersTable() {
         <DataTable
           title="Arnold Movies"
           columns={columns}
-          data={tableContent}
+          data={tableContent.slice(0, 50 * tablePage)}
         />
       </section>
     )
