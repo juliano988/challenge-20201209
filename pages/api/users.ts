@@ -6,15 +6,14 @@ import { User } from '../../customTypes.js';
 mongoose.connect(process.env.MONGO_DB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .catch(error => console.log(error));
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   mongoose.connection.on('error', err => {
     console.log(err);
   });
 
-  Users.find(function (err, docs:Array<User>) {
-    if (err) return console.error(err);
-    res.status(200).json(docs)
-  })
+  const users = await Users.find({}).lean().exec() as Array<User>;
+  const usersWithOutLoginPassword = users.map(function (user) { delete user.login.password; return user })
+  res.status(200).json(usersWithOutLoginPassword);
 
 }

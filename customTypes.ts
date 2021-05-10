@@ -1,3 +1,5 @@
+import { DetailedHTMLProps, ImgHTMLAttributes } from "react"
+
 export type User = {
   gender: string,
   name: {
@@ -52,4 +54,16 @@ export type User = {
     thumbnail: string
   },
   nat: string
+}
+
+export type TableItem = {
+  image: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  fullName: string,
+  email: string,
+  gender: string,
+  birthDate: string,
+  phone: string,
+  nationality: string,
+  address: string,
+  id: string
 }
