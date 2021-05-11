@@ -1,0 +1,20 @@
+.user_img {
+  margin-top: -75px;
+  img:first-child {
+    position: relative;
+    left: 20px;
+    border-radius: 100%;
+  }
+  img:last-child {
+    position: relative;
+    top: 35px;
+    right: 10px;
+  }
+}
+
+.user_info{
+  text-align: initial;
+  p{
+    margin: 2px;
+  }
+}

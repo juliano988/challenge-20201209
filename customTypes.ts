@@ -58,6 +58,8 @@ export type User = {
 
 export type TableItem = {
   image: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  imageMin: DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  title: string,
   fullName: string,
   email: string,
   gender: string,
