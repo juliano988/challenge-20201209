@@ -67,7 +67,8 @@ export type TableItem = {
   phone: string,
   nationality: string,
   address: string,
-  id: string
+  id: string,
+  userData: User
 }
 
 export type PaginationMeta = {

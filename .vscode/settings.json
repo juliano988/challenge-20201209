@@ -1,10 +1,13 @@
 {
   "cSpell.words": [
+    "Datepicker",
     "mongodb",
     "setactual",
     "setdelete",
     "setfetch",
     "setmount",
+    "setupdate",
+    "setuser",
     "setusers",
     "upsert"
   ]

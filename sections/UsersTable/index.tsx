@@ -53,7 +53,8 @@ export default function UsersTable() {
         phone: user.phone,
         nationality: user.nat,
         address: user.location.street.name + ' nº' + user.location.street.number + ', ' + user.location.city + ' - ' + user.location.state,
-        id: user.login.uuid
+        id: user.login.uuid,
+        userData: user
       } as TableItem;
       tempArr.push(tempObj)
     })
