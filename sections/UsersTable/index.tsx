@@ -2,23 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { PaginationMeta, TableItem, User } from '../../customTypes';
+import UserModal from './components/UserModal';
 
 export default function UsersTable() {
 
   const columns = [
     {
-      name: 'Foto',
-      selector: 'image',
-      sortable: true,
-    },
-    {
       name: 'Nome completo',
       selector: 'fullName',
-      sortable: true,
-    },
-    {
-      name: 'Email',
-      selector: 'email',
       sortable: true,
     },
     {
@@ -31,42 +22,25 @@ export default function UsersTable() {
       selector: 'birthDate',
       sortable: true,
     },
-    {
-      name: 'Telefone',
-      selector: 'phone',
-      sortable: true,
-    },
-    {
-      name: 'Nacionalidade',
-      selector: 'nationality',
-      sortable: true,
-    },
-    {
-      name: 'Endereço',
-      selector: 'address',
-      sortable: true,
-    },
-    {
-      name: 'ID',
-      selector: 'id',
-      sortable: true,
-    },
   ];
 
-  const [tableContent, settableContent] = useState([]);
+  const [tableContent, settableContent] = useState<Array<TableItem>>([]);
   const [actualTableUsers, setactualTableUsers] = useState<Array<User>>();
   const [actualTableMeta, setactualTableMeta] = useState<PaginationMeta>();
   const [mountLoading, setmountLoading] = useState<boolean>(true);
-  const [fetchLoading, setfetchLoading] = useState(false)
+  const [fetchLoading, setfetchLoading] = useState<boolean>(false);
+
+  const [showUserModal, setShowUserModal] = useState<boolean>(false);
+  const [modalUserData, setmodalUserData] = useState<TableItem>();
 
   function buildTableContent(users: Array<User>) {
     const tempArr = [];
     users.forEach(function (user) {
       let tempObj = {} as TableItem;
-      tempObj.image = <img src={user.picture.thumbnail}></img>;
+      tempObj.image = <img src={user.picture.large}></img>;
       tempObj.fullName = user.name.first + ' ' + user.name.last;
       tempObj.email = user.email;
-      tempObj.gender = user.gender;
+      tempObj.gender = user.gender.replace(/female/,'Feminino').replace(/male/,'Masculino');
       tempObj.birthDate = new Date(user.dob.date).toLocaleDateString('pt-BR');
       tempObj.phone = user.phone;
       tempObj.nationality = user.nat;
@@ -87,6 +61,11 @@ export default function UsersTable() {
       setmountLoading(false);
     })
   }, []);
+
+  function handleRowClick(row: TableItem, e: MouseEvent) {
+    setmodalUserData(row);
+    setShowUserModal(true);
+  }
 
   function handleClickButton() {
     if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
@@ -113,10 +92,18 @@ export default function UsersTable() {
       <section>
         <DataTable
           title="Arnold Movies"
+          onRowClicked={(row, e) => handleRowClick(row, e)}
+          pointerOnHover={true}
+          striped={true}
+          highlightOnHover={true}
+          responsive={true}
+          dense={true}
           columns={columns}
           data={tableContent}
         />
-        <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>Carregar mais</Button>
+        {actualTableMeta.page !== actualTableMeta.pages &&
+          <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>Carregar mais</Button>}
+        <UserModal modalUserData={modalUserData} showUserModal={showUserModal} setShowUserModal={setShowUserModal}/>
       </section>
     )
   }
