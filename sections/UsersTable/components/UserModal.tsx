@@ -6,7 +6,7 @@ import ReactCountryFlag from "react-country-flag"
 import { CircleFlag } from 'react-circle-flags'
 
 
-export default function UserModal(props: { modalUserData: TableItem, showUserModal: boolean, setShowUserModal: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function UserModal(props: { modalUserData: TableItem, tableContent: Array<TableItem>, settableContent: React.Dispatch<React.SetStateAction<TableItem[]>>, showUserModal: boolean, setShowUserModal: React.Dispatch<React.SetStateAction<boolean>> }) {
 
   const [deleteBtnClickCount, setdeleteBtnClickCount] = useState<number>(0);
 
@@ -19,6 +19,8 @@ export default function UserModal(props: { modalUserData: TableItem, showUserMod
     setdeleteBtnClickCount(deleteBtnClickCount + 1);
     if (deleteBtnClickCount + 1 === 2) {
       await fetch('/api/users/' + props.modalUserData.id, { method: "DELETE" });
+      const tempArray = props.tableContent.filter(function (tableItem) { return tableItem.id !== props.modalUserData.id });
+      props.settableContent(tempArray);
       handleOnHide();
     }
   }
