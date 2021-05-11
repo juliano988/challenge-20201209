@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
-import { TableItem, User } from '../../customTypes';
+import { PaginationMeta, TableItem, User } from '../../customTypes';
 
 export default function UsersTable() {
 
@@ -53,34 +54,55 @@ export default function UsersTable() {
   ];
 
   const [tableContent, settableContent] = useState([]);
-  const [loading, setloading] = useState<boolean>(true);
-  const [tablePage, settablePage] = useState<number>(1);
+  const [actualTableUsers, setactualTableUsers] = useState<Array<User>>();
+  const [actualTableMeta, setactualTableMeta] = useState<PaginationMeta>();
+  const [mountLoading, setmountLoading] = useState<boolean>(true);
+  const [fetchLoading, setfetchLoading] = useState(false)
+
+  function buildTableContent(users: Array<User>) {
+    const tempArr = [];
+    users.forEach(function (user) {
+      let tempObj = {} as TableItem;
+      tempObj.image = <img src={user.picture.thumbnail}></img>;
+      tempObj.fullName = user.name.first + ' ' + user.name.last;
+      tempObj.email = user.email;
+      tempObj.gender = user.gender;
+      tempObj.birthDate = new Date(user.dob.date).toLocaleDateString('pt-BR');
+      tempObj.phone = user.phone;
+      tempObj.nationality = user.nat;
+      tempObj.address = user.location.street.name + ' nº' + user.location.street.number + ', ' + user.location.city + ' - ' + user.location.state;
+      tempObj.id = user.login.uuid;
+      tempArr.push(tempObj)
+    })
+    settableContent(tempArr);
+  }
 
   useEffect(function () {
-    fetch('/api/users').then(function (res) {
+    fetch('/api/users?p=1').then(function (res) {
       return res.json()
-    }).then(function (users: Array<User>) {
-
-      users.forEach(function (user) {
-        let tempObj = {} as TableItem;
-        tempObj.image = <img src={user.picture.thumbnail}></img>;
-        tempObj.fullName = user.name.first + ' ' + user.name.last;
-        tempObj.email = user.email;
-        tempObj.gender = user.gender;
-        tempObj.birthDate = new Date(user.dob.date).toLocaleDateString('pt-BR');
-        tempObj.phone = user.phone;
-        tempObj.nationality = user.nat;
-        tempObj.address = user.location.street.name + ' nº' + user.location.street.number + ', ' + user.location.city + ' - ' + user.location.state;
-        tempObj.id = user.login.uuid;
-        tableContent.push(tempObj)
-      })
-      settableContent(tableContent);
-      setloading(false);
+    }).then(function (data: { meta: PaginationMeta, users: Array<User> }) {
+      setactualTableUsers(data.users);
+      setactualTableMeta(data.meta);
+      buildTableContent(data.users);
+      setmountLoading(false);
     })
-
   }, []);
 
-  if (loading) {
+  function handleClickButton() {
+    if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
+      setfetchLoading(true);
+      fetch('/api/users?p=' + (actualTableMeta.page + 1)).then(function (res) {
+        return res.json()
+      }).then(function (data: { meta: PaginationMeta, users: Array<User> }) {
+        setactualTableUsers(actualTableUsers.concat(data.users));
+        setactualTableMeta(data.meta);
+        buildTableContent(actualTableUsers.concat(data.users));
+        setfetchLoading(false);
+      })
+    }
+  }
+
+  if (mountLoading) {
     return (
       <section>
         <p>Carregando...</p>
@@ -92,8 +114,9 @@ export default function UsersTable() {
         <DataTable
           title="Arnold Movies"
           columns={columns}
-          data={tableContent.slice(0, 50 * tablePage)}
+          data={tableContent}
         />
+        <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>Carregar mais</Button>
       </section>
     )
   }
