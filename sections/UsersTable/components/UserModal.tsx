@@ -6,7 +6,7 @@ import { CircleFlag } from 'react-circle-flags'
 import { useEffect } from "react";
 
 
-export default function UserModal(props: { modalUserData: TableItem, tableContent: Array<TableItem>, settableContent: React.Dispatch<React.SetStateAction<TableItem[]>>, showUserModal: boolean, setShowUserModal: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function UserModal(props: { modalUserData: TableItem, setmodalUserData: React.Dispatch<React.SetStateAction<TableItem>>, tableContent: Array<TableItem>, settableContent: React.Dispatch<React.SetStateAction<TableItem[]>>, showUserModal: boolean, setShowUserModal: React.Dispatch<React.SetStateAction<boolean>> }) {
 
   const [deleteBtnClickCount, setdeleteBtnClickCount] = useState<number>(0);
   const [updateBtnClickCount, setupdateBtnClickCount] = useState<number>(0);
@@ -39,7 +39,7 @@ export default function UserModal(props: { modalUserData: TableItem, tableConten
     setuserDobDate(new Date(props.modalUserData?.userData.dob.date || new Date().toString()).toISOString().slice(0, 10));
     setuserPhone(props.modalUserData?.userData.phone);
     setuserCell(props.modalUserData?.userData.cell);
-  }, [props])
+  }, [props.modalUserData])
 
   function handleOnHide() {
     setupdateBtnClickCount(0);
@@ -78,11 +78,23 @@ export default function UserModal(props: { modalUserData: TableItem, tableConten
       await fetch('/api/users/' + props.modalUserData.userData.login.uuid + '?userObj=' + encodedSubmitData, { method: "PUT" });
       const tempArray = props.tableContent.map(function (tableItem) {
         if (tableItem.id === props.modalUserData.id) {
-          return Object.assign(tempObj, tableItem);
+          const updatedTableItem: TableItem = {
+            ...tableItem,
+            fullName: tempObj.name.first + ' ' + tempObj.name.last,
+            title: tempObj.name.title.replace('Miss', 'Srta.').replace('Mrs', 'Sra.').replace('Mr', 'Sr.').replace('Ms', 'Sra.'),
+            email: tempObj.email,
+            gender: tempObj.gender.replace('female', 'Feminino').replace('male', 'Masculino'),
+            birthDate: new Date(tempObj.dob.date).toLocaleDateString('pt-BR'),
+            phone: tempObj.phone,
+            address: tempObj.location.street.name + ' nº' + tempObj.location.street.number + ', ' + tempObj.location.city + ' - ' + tempObj.location.state,
+          };
+          props.setmodalUserData(updatedTableItem);
+          return updatedTableItem;
         } else {
           return tableItem;
         }
       })
+      console.log(tempArray[0])
       props.settableContent(tempArray);
       handleOnHide();
 

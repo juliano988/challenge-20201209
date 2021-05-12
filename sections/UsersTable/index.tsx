@@ -90,7 +90,7 @@ export default function UsersTable() {
       })
     }
   }
-
+  console.log(tableContent[0])
   if (mountLoading) {
     return (
       <section>
@@ -115,7 +115,7 @@ export default function UsersTable() {
         </div>
         {actualTableMeta.page !== actualTableMeta.pages &&
           <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>Carregar mais</Button>}
-        <UserModal modalUserData={modalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
+        <UserModal modalUserData={modalUserData} setmodalUserData={setmodalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
       </section>
     )
   }

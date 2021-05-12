@@ -5,6 +5,7 @@
     "setactual",
     "setdelete",
     "setfetch",
+    "setmodal",
     "setmount",
     "setupdate",
     "setuser",
