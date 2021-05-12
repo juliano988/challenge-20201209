@@ -90,7 +90,7 @@ export default function UsersTable() {
       })
     }
   }
-  console.log(tableContent[0])
+  
   if (mountLoading) {
     return (
       <section>

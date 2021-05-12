@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from '../../../styles/sections/UsersTable/UserModal-styles.module.scss';
 import { Button, Col, Form, InputGroup, Modal, Row, Spinner } from "react-bootstrap";
-import { TableItem } from "../../../customTypes";
+import { TableItem, User } from "../../../customTypes";
 import { CircleFlag } from 'react-circle-flags'
 import { useEffect } from "react";
 
@@ -87,6 +87,7 @@ export default function UserModal(props: { modalUserData: TableItem, setmodalUse
             birthDate: new Date(tempObj.dob.date).toLocaleDateString('pt-BR'),
             phone: tempObj.phone,
             address: tempObj.location.street.name + ' nº' + tempObj.location.street.number + ', ' + tempObj.location.city + ' - ' + tempObj.location.state,
+            userData: { ...tableItem.userData, ...tempObj as User }
           };
           props.setmodalUserData(updatedTableItem);
           return updatedTableItem;
@@ -94,7 +95,6 @@ export default function UserModal(props: { modalUserData: TableItem, setmodalUse
           return tableItem;
         }
       })
-      console.log(tempArray[0])
       props.settableContent(tempArray);
       handleOnHide();
 
