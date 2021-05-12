@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { PaginationMeta, TableItem, User } from '../../customTypes';
 import UserModal from './components/UserModal';
+import TableFilter from './components/TableFilter';
 
 export default function UsersTable() {
 
@@ -35,6 +36,9 @@ export default function UsersTable() {
   const [actualTableMeta, setactualTableMeta] = useState<PaginationMeta>();
   const [mountLoading, setmountLoading] = useState<boolean>(true);
   const [fetchLoading, setfetchLoading] = useState<boolean>(false);
+
+  const [filtredData, setfiltredData] = useState<Array<User>>([]);
+  const [filtredDataMeta, setfiltredDataMeta] = useState<PaginationMeta>();
 
   const [showUserModal, setShowUserModal] = useState<boolean>(false);
   const [modalUserData, setmodalUserData] = useState<TableItem>();
@@ -72,6 +76,10 @@ export default function UsersTable() {
     })
   }, []);
 
+  useEffect(function () {
+    console.log(filtredData)
+  }, [filtredData, filtredDataMeta])
+
   function handleRowClick(row: TableItem, e: MouseEvent) {
     setmodalUserData(row);
     setShowUserModal(true);
@@ -100,6 +108,7 @@ export default function UsersTable() {
   } else {
     return (
       <section>
+        <TableFilter setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
             title="Tabela de clientes"
