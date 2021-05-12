@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/sections/UsersTable/index-styles.module.scss'
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import { PaginationMeta, TableItem, User } from '../../customTypes';
 import UserModal from './components/UserModal';
@@ -125,12 +125,15 @@ export default function UsersTable() {
             highlightOnHover={true}
             responsive={true}
             dense={true}
+            defaultSortField="fullName"
             columns={columns}
             data={tableContent}
           />
         </div>
         {actualTableMeta.page !== actualTableMeta.pages &&
-          <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>Carregar mais</Button>}
+          <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
+            {fetchLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Carregar mais'}
+            </Button>}
         <UserModal modalUserData={modalUserData} setmodalUserData={setmodalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
       </section>
     )
