@@ -49,7 +49,7 @@ export default function UsersTable() {
         title: user.name.title.replace('Miss', 'Srta.').replace('Mrs', 'Sra.').replace('Mr', 'Sr.').replace('Ms', 'Sra.'),
         email: user.email,
         gender: user.gender.replace('female', 'Feminino').replace('male', 'Masculino'),
-        birthDate: new Date(user.dob.date).toLocaleDateString('pt-BR'),
+        birthDate: new Date(new Date(user.dob.date).getTime() + 10800000).toLocaleDateString('pt-BR'),
         phone: user.phone,
         nationality: user.nat,
         address: user.location.street.name + ' nº' + user.location.street.number + ', ' + user.location.city + ' - ' + user.location.state,
@@ -90,7 +90,7 @@ export default function UsersTable() {
       })
     }
   }
-  
+
   if (mountLoading) {
     return (
       <section>

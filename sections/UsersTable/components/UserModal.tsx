@@ -84,7 +84,7 @@ export default function UserModal(props: { modalUserData: TableItem, setmodalUse
             title: tempObj.name.title.replace('Miss', 'Srta.').replace('Mrs', 'Sra.').replace('Mr', 'Sr.').replace('Ms', 'Sra.'),
             email: tempObj.email,
             gender: tempObj.gender.replace('female', 'Feminino').replace('male', 'Masculino'),
-            birthDate: new Date(tempObj.dob.date).toLocaleDateString('pt-BR'),
+            birthDate: new Date(new Date(tempObj.dob.date).getTime() + 10800000).toLocaleDateString('pt-BR'),
             phone: tempObj.phone,
             address: tempObj.location.street.name + ' nº' + tempObj.location.street.number + ', ' + tempObj.location.city + ' - ' + tempObj.location.state,
             userData: { ...tableItem.userData, ...tempObj as User }
