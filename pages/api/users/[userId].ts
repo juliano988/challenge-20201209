@@ -64,9 +64,4 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     default: break;
   }
 
-  // const input = encodeURI('{"state":"Ceará"}')
-  // console.log(input)
-  // const output = decodeURI(input)
-  // console.log(JSON.parse(output))
-
 }

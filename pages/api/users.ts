@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const selectedPage = Number(req.query.p);
     if (selectedPage) {
       const numberOfUsers = await Users.countDocuments({}).exec();
-      const numberOfPages = Math.floor(numberOfUsers / 50);
+      const numberOfPages = Math.ceil(numberOfUsers / 50);
       if (selectedPage > 0 && selectedPage <= numberOfPages) {
         const users = await Users.find({}).skip(50 * (selectedPage - 1)).limit(50).lean().exec() as Array<User>;
         const usersWithOutLoginPassword = users.map(function (user) { delete user.login.password; return user })
