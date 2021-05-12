@@ -13,12 +13,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   const decodedUserNameRegex = new RegExp(decodeURI(req.query.userName as string), 'i');
+  const userGenderRegex = new RegExp('^' + req.query.userGender as string, 'i');
   const requestedPage = Number(req.query.p);
 
   if (requestedPage) {
-    const foundedUsers = await Users.find({ 'name.first': decodedUserNameRegex }).skip(50 * (requestedPage - 1)).limit(50).lean().exec() as Array<User>;
+    const foundedUsers = await Users.find({ 'name.first': decodedUserNameRegex, 'name.last': decodedUserNameRegex, gender: userGenderRegex }).skip(50 * (requestedPage - 1)).limit(50).lean().exec() as Array<User>;
     if (foundedUsers.length) {
-      const numberOfAllFoundedUsers = (await Users.find({ 'name.first': decodedUserNameRegex }).lean().exec()).length;
+      const numberOfAllFoundedUsers = (await Users.find({ 'name.first': decodedUserNameRegex, 'name.last': decodedUserNameRegex, gender: userGenderRegex }).lean().exec()).length;
       const numberOfPages = Math.ceil(numberOfAllFoundedUsers / 50);
       const foundedUsersWithOutLoginPassword = foundedUsers.map(function (user) { delete user.login.password; return user });
       const meta: PaginationMeta = { page: requestedPage, pages: numberOfPages, pageUsers: foundedUsers.length, totalUsers: numberOfAllFoundedUsers };

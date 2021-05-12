@@ -94,7 +94,7 @@ export default function UsersTable() {
     if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
       setfetchLoading(true);
       const regularURI = '/api/users?p=' + (actualTableMeta.page + 1);
-      const searchURI = '/api/users/filter?userName=' + freezedNameFilterField + '&p=' + (actualTableMeta.page + 1);
+      const searchURI = '/api/users/filter?userName=' + encodeURI(freezedNameFilterField) + '&p=' + (actualTableMeta.page + 1);
       fetch(filtredData.length ? searchURI : regularURI).then(function (res) {
         return res.json()
       }).then(function (data: { meta: PaginationMeta, users: Array<User> }) {
