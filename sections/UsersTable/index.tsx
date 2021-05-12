@@ -37,6 +37,7 @@ export default function UsersTable() {
   const [mountLoading, setmountLoading] = useState<boolean>(true);
   const [fetchLoading, setfetchLoading] = useState<boolean>(false);
 
+  const [freezedNameFilterField, setfreezedNameFilterField] = useState<string>('');
   const [filtredData, setfiltredData] = useState<Array<User>>([]);
   const [filtredDataMeta, setfiltredDataMeta] = useState<PaginationMeta>();
 
@@ -77,7 +78,11 @@ export default function UsersTable() {
   }, []);
 
   useEffect(function () {
-    console.log(filtredData)
+    if (filtredData && filtredDataMeta) {
+      setactualTableUsers(filtredData);
+      setactualTableMeta(filtredDataMeta);
+      buildTableContent(filtredData);
+    }
   }, [filtredData, filtredDataMeta])
 
   function handleRowClick(row: TableItem, e: MouseEvent) {
@@ -88,7 +93,9 @@ export default function UsersTable() {
   function handleClickButton() {
     if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
       setfetchLoading(true);
-      fetch('/api/users?p=' + (actualTableMeta.page + 1)).then(function (res) {
+      const regularURI = '/api/users?p=' + (actualTableMeta.page + 1);
+      const searchURI = '/api/users/filter?userName=' + freezedNameFilterField + '&p=' + (actualTableMeta.page + 1);
+      fetch(filtredData.length ? searchURI : regularURI).then(function (res) {
         return res.json()
       }).then(function (data: { meta: PaginationMeta, users: Array<User> }) {
         setactualTableUsers(actualTableUsers.concat(data.users));
@@ -108,7 +115,7 @@ export default function UsersTable() {
   } else {
     return (
       <section>
-        <TableFilter setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
+        <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
             title="Tabela de clientes"

@@ -22,7 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const numberOfPages = Math.ceil(numberOfAllFoundedUsers / 50);
       const foundedUsersWithOutLoginPassword = foundedUsers.map(function (user) { delete user.login.password; return user });
       const meta: PaginationMeta = { page: requestedPage, pages: numberOfPages, pageUsers: foundedUsers.length, totalUsers: numberOfAllFoundedUsers };
-      res.status(200).json({ meta: meta, foundedUsers: foundedUsersWithOutLoginPassword });
+      res.status(200).json({ meta: meta, users: foundedUsersWithOutLoginPassword });
     } else {
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.status(404).send('A busca não retornou resultados.');
