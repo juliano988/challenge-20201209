@@ -38,6 +38,7 @@ export default function UsersTable() {
   const [fetchLoading, setfetchLoading] = useState<boolean>(false);
 
   const [freezedNameFilterField, setfreezedNameFilterField] = useState<string>('');
+  const [freezedLastNameFilterField, setfreezedLastNameFilterField] = useState<string>('');
   const [freezedGenderFilterField, setfreezedGenderFilterField] = useState<string>('');
   const [filtredData, setfiltredData] = useState<Array<User>>([]);
   const [filtredDataMeta, setfiltredDataMeta] = useState<PaginationMeta>();
@@ -95,8 +96,8 @@ export default function UsersTable() {
     if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
       setfetchLoading(true);
       const regularURI = '/api/users?p=' + (actualTableMeta.page + 1);
-      const searchURI = '/api/users/filter?userName=' +
-        encodeURI(freezedNameFilterField) +
+      const searchURI = '/api/users/filter?userName=' + encodeURI(freezedNameFilterField) +
+        '&userLastName=' + encodeURI(freezedLastNameFilterField) +
         '&userGender=' + freezedGenderFilterField +
         '&p=' + (actualTableMeta.page + 1);
       fetch(filtredData.length ? searchURI : regularURI).then(function (res) {
@@ -119,7 +120,7 @@ export default function UsersTable() {
   } else {
     return (
       <section>
-        <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfreezedGenderFilterField={setfreezedGenderFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
+        <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfreezedLastNameFilterField={setfreezedLastNameFilterField} setfreezedGenderFilterField={setfreezedGenderFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
             title="Tabela de clientes"
