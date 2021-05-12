@@ -38,6 +38,7 @@ export default function UsersTable() {
   const [fetchLoading, setfetchLoading] = useState<boolean>(false);
 
   const [freezedNameFilterField, setfreezedNameFilterField] = useState<string>('');
+  const [freezedGenderFilterField, setfreezedGenderFilterField] = useState<string>('');
   const [filtredData, setfiltredData] = useState<Array<User>>([]);
   const [filtredDataMeta, setfiltredDataMeta] = useState<PaginationMeta>();
 
@@ -94,7 +95,10 @@ export default function UsersTable() {
     if (actualTableMeta.page + 1 <= actualTableMeta.pages) {
       setfetchLoading(true);
       const regularURI = '/api/users?p=' + (actualTableMeta.page + 1);
-      const searchURI = '/api/users/filter?userName=' + encodeURI(freezedNameFilterField) + '&p=' + (actualTableMeta.page + 1);
+      const searchURI = '/api/users/filter?userName=' +
+        encodeURI(freezedNameFilterField) +
+        '&userGender=' + freezedGenderFilterField +
+        '&p=' + (actualTableMeta.page + 1);
       fetch(filtredData.length ? searchURI : regularURI).then(function (res) {
         return res.json()
       }).then(function (data: { meta: PaginationMeta, users: Array<User> }) {
@@ -115,7 +119,7 @@ export default function UsersTable() {
   } else {
     return (
       <section>
-        <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
+        <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfreezedGenderFilterField={setfreezedGenderFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
             title="Tabela de clientes"
@@ -125,7 +129,6 @@ export default function UsersTable() {
             highlightOnHover={true}
             responsive={true}
             dense={true}
-            defaultSortField="fullName"
             columns={columns}
             data={tableContent}
           />
@@ -133,7 +136,7 @@ export default function UsersTable() {
         {actualTableMeta.page !== actualTableMeta.pages &&
           <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
             {fetchLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Carregar mais'}
-            </Button>}
+          </Button>}
         <UserModal modalUserData={modalUserData} setmodalUserData={setmodalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
       </section>
     )
