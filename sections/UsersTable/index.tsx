@@ -123,7 +123,7 @@ export default function UsersTable() {
         <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfreezedLastNameFilterField={setfreezedLastNameFilterField} setfreezedGenderFilterField={setfreezedGenderFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
-            title="Tabela de clientes"
+            title="Tabela de Clientes"
             onRowClicked={(row, e) => handleRowClick(row, e)}
             pointerOnHover={true}
             striped={true}
