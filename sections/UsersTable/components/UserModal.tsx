@@ -42,14 +42,50 @@ export default function UserModal(props: { modalUserData: TableItem, tableConten
   }, [props])
 
   function handleOnHide() {
+    setupdateBtnClickCount(0);
     setdeleteBtnClickCount(0);
     props.setShowUserModal(false);
   }
 
-  function handleUpdateBtn() {
+  async function handleUpdateBtn() {
     setupdateBtnClickCount(updateBtnClickCount + 1);
-    if (updateBtnClickCount + 1 === 3) {
-      setupdateBtnClickCount(0)
+    if (updateBtnClickCount + 1 === 2) {
+      const tempObj = {
+        gender: userGender,
+        name: {
+          title: userTitle,
+          first: userFirstName,
+          last: userLastName
+        },
+        location: {
+          street: {
+            number: userStreetNumber,
+            name: userStreetName
+          },
+          city: userCity,
+          state: userState,
+          postcode: userPostcode,
+        },
+        email: userEmail,
+        dob: {
+          date: new Date(userDobDate).toISOString(),
+          age: new Date(Date.now() - new Date(userDobDate).getTime()).getFullYear() - 1970
+        },
+        phone: userPhone,
+        cell: userCell,
+      };
+      const encodedSubmitData = encodeURI(JSON.stringify(tempObj));
+      await fetch('/api/users/' + props.modalUserData.userData.login.uuid + '?userObj=' + encodedSubmitData, { method: "PUT" });
+      const tempArray = props.tableContent.map(function (tableItem) {
+        if (tableItem.id === props.modalUserData.id) {
+          return Object.assign(tempObj, tableItem);
+        } else {
+          return tableItem;
+        }
+      })
+      props.settableContent(tempArray);
+      handleOnHide();
+
     }
   }
 
@@ -70,50 +106,55 @@ export default function UserModal(props: { modalUserData: TableItem, tableConten
           <>
             <h5>Atualização do cadastro de usuário:</h5>
             <Form>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Gênero</InputGroup.Text>
-                <Form.Control size="sm" as="select" value={userGender} onChange={(e) => setuserGender(e.target.value)} >
-                  <option value="male" >Masculino</option>
-                  <option value="female" >Feminino</option>
-                </Form.Control>
-                <InputGroup.Text>Aniversário</InputGroup.Text>
-                <Form.Control size="sm" type="date" value={userDobDate} onChange={(e) => setuserDobDate(e.target.value)} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Nome completo</InputGroup.Text>
-                <Form.Control size="sm" as="select" value={userTitle} onChange={(e) => setuserTitle(e.target.value)}>
-                  <option value="Miss">Srta.</option>
-                  <option value="Mrs">Sra.</option>
-                  <option value="Mr">Sr.</option>
-                </Form.Control>
-                <Form.Control size="sm" type="text" value={userFirstName} onChange={(e) => setuserFirstName(e.target.value)} />
-                <Form.Control size="sm" type="text" value={userLastName} onChange={(e) => setuserLastName(e.target.value)} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Logradouro</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userStreetName} onChange={(e) => setuserStreetName(e.target.value)} />
-                <InputGroup.Text>nº</InputGroup.Text>
-                <Form.Control size="sm" type="number" value={userStreetNumber} onChange={(e) => setuserStreetNumber(Number(e.target.value))} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Cidade</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userCity} onChange={(e) => setuserCity(e.target.value)} />
-                <InputGroup.Text>Estado</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userState} onChange={(e) => setuserState(e.target.value)} />
-                <InputGroup.Text>CEP</InputGroup.Text>
-                <Form.Control size="sm" type="number" value={userPostcode} onChange={(e) => setuserPostcode(Number(e.target.value))} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>E-mail</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userEmail} onChange={(e) => setuserEmail(e.target.value)} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Telefone</InputGroup.Text>
-                <InputGroup.Text>Fixo</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userPhone} onChange={(e) => setuserPhone(e.target.value)} />
-                <InputGroup.Text>Celular</InputGroup.Text>
-                <Form.Control size="sm" type="text" value={userCell} onChange={(e) => setuserCell(e.target.value)} />
-              </InputGroup>
+              <div className={styles.user_update_form}>
+                <h6>Dados pessoais:</h6>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Nome completo</InputGroup.Text>
+                  <Form.Control size="sm" as="select" value={userTitle} onChange={(e) => setuserTitle(e.target.value)}>
+                    <option value="Miss">Srta.</option>
+                    <option value="Mrs">Sra.</option>
+                    <option value="Mr">Sr.</option>
+                  </Form.Control>
+                  <Form.Control size="sm" type="text" value={userFirstName} onChange={(e) => setuserFirstName(e.target.value)} />
+                  <Form.Control size="sm" type="text" value={userLastName} onChange={(e) => setuserLastName(e.target.value)} />
+                </InputGroup>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Gênero</InputGroup.Text>
+                  <Form.Control size="sm" as="select" value={userGender} onChange={(e) => setuserGender(e.target.value)} >
+                    <option value="male" >Masculino</option>
+                    <option value="female" >Feminino</option>
+                  </Form.Control>
+                  <InputGroup.Text>Aniversário</InputGroup.Text>
+                  <Form.Control size="sm" type="date" value={userDobDate} onChange={(e) => setuserDobDate(e.target.value)} />
+                </InputGroup>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Telefone</InputGroup.Text>
+                  <InputGroup.Text>Fixo</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userPhone} onChange={(e) => setuserPhone(e.target.value)} />
+                  <InputGroup.Text>Celular</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userCell} onChange={(e) => setuserCell(e.target.value)} />
+                </InputGroup>
+                <h6>Endereço:</h6>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Logradouro</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userStreetName} onChange={(e) => setuserStreetName(e.target.value)} />
+                  <InputGroup.Text>nº</InputGroup.Text>
+                  <Form.Control size="sm" type="number" value={userStreetNumber} onChange={(e) => setuserStreetNumber(Number(e.target.value))} />
+                </InputGroup>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>Cidade</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userCity} onChange={(e) => setuserCity(e.target.value)} />
+                  <InputGroup.Text>Estado</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userState} onChange={(e) => setuserState(e.target.value)} />
+                  <InputGroup.Text>CEP</InputGroup.Text>
+                  <Form.Control size="sm" type="number" value={userPostcode} onChange={(e) => setuserPostcode(Number(e.target.value))} />
+                </InputGroup>
+                <h6>Dados cadastrais:</h6>
+                <InputGroup className="mb-3">
+                  <InputGroup.Text>E-mail</InputGroup.Text>
+                  <Form.Control size="sm" type="text" value={userEmail} onChange={(e) => setuserEmail(e.target.value)} />
+                </InputGroup>
+              </div>
             </Form>
           </> :
           <>
