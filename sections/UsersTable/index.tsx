@@ -5,6 +5,7 @@ import DataTable, { createTheme } from 'react-data-table-component';
 import { PaginationMeta, TableItem, User } from '../../customTypes';
 import UserModal from './components/UserModal';
 import TableFilter from './components/TableFilter';
+import Skeleton from 'react-loading-skeleton';
 
 export default function UsersTable() {
 
@@ -128,8 +129,24 @@ export default function UsersTable() {
 
   if (mountLoading) {
     return (
-      <section>
-        <p>Carregando...</p>
+      <section className="text-start">
+        <div className="mb-1">
+          <Skeleton style={{ width: '11%', margin: 'auto 1%' }} height={31} />
+          <Skeleton style={{ width: '41%', margin: 'auto 1%' }} height={31} />
+          <Skeleton style={{ width: '41%', margin: 'auto 1%' }} height={31} />
+        </div>
+        <div className="mb-3">
+          <Skeleton style={{ width: '15%', margin: 'auto 1%' }} height={31} />
+          <Skeleton style={{ width: '62%', margin: 'auto 1%' }} height={31} />
+          <Skeleton style={{ width: '10%', margin: 'auto 1%' }} height={31} />
+          <Skeleton style={{ width: '4%', margin: 'auto 1%' }} height={31} />
+        </div>
+        <div className="mb-4">
+          <Skeleton style={{ width: '200px', marginLeft: '30px' }} height={31} />
+        </div>
+        <div className="mb-3">
+          <Skeleton count={50} style={{margin: '5px auto'}} height={40} />
+        </div>
       </section>
     )
   } else {
@@ -151,7 +168,7 @@ export default function UsersTable() {
           />
         </div>
         {actualTableMeta.page !== actualTableMeta.pages &&
-          <Button className= {styles.load_more_btn + " mt-3 mb-3"} variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
+          <Button className={styles.load_more_btn + " mt-3 mb-3"} variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
             {fetchLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Carregar mais'}
           </Button>}
         <UserModal modalUserData={modalUserData} setmodalUserData={setmodalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
