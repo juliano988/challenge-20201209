@@ -45,13 +45,13 @@ export default function TableFilter(props: { setfreezedNameFilterField: React.Di
 
   return (
     <div onKeyPress={(e) => e.key === 'Enter' && handleClickSearchBtn(false)}>
-      <InputGroup className="mb-3">
+      <InputGroup size="sm" className="mb-1">
         <InputGroup.Text>Nome</InputGroup.Text>
         <FormControl type="text" value={nameFilterField} onChange={(e) => setnameFilterField(e.target.value)} placeholder="Ex.: John" />
         <FormControl type="text" value={lastNameFilterField} onChange={(e) => setlastNameFilterField(e.target.value)} placeholder="Ex.: Doe" />
       </InputGroup>
 
-      <InputGroup className="mb-3">
+      <InputGroup size="sm">
         <InputGroup.Text>Gênero</InputGroup.Text>
         <Form.Control size="sm" as="select" value={genderFilterField} onChange={(e) => setgenderFilterField(e.target.value)} >
           <option value="" >Selecionar</option>

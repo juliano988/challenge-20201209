@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/sections/UsersTable/index-styles.module.scss'
 import { Button, Spinner } from 'react-bootstrap';
-import DataTable from 'react-data-table-component';
+import DataTable, { createTheme } from 'react-data-table-component';
 import { PaginationMeta, TableItem, User } from '../../customTypes';
 import UserModal from './components/UserModal';
 import TableFilter from './components/TableFilter';
@@ -30,6 +30,21 @@ export default function UsersTable() {
       sortable: true,
     },
   ];
+
+  createTheme('solarized', {
+    text: {
+      primary: '#2c3b48'
+    },
+    background: {
+      default: '#f7f9fa'
+    },
+    divider: {
+      default: '#f7f9fa'
+    },
+    striped: {
+      default: 'white'
+    }
+  });
 
   const [tableContent, settableContent] = useState<Array<TableItem>>([]);
   const [actualTableUsers, setactualTableUsers] = useState<Array<User>>();
@@ -119,11 +134,12 @@ export default function UsersTable() {
     )
   } else {
     return (
-      <section>
+      <section className="mb-3">
         <TableFilter setfreezedNameFilterField={setfreezedNameFilterField} setfreezedLastNameFilterField={setfreezedLastNameFilterField} setfreezedGenderFilterField={setfreezedGenderFilterField} setfiltredData={setfiltredData} setfiltredDataMeta={setfiltredDataMeta} />
         <div className={styles.table_div}>
           <DataTable
             title="Tabela de Clientes"
+            theme="solarized"
             onRowClicked={(row, e) => handleRowClick(row, e)}
             pointerOnHover={true}
             striped={true}
@@ -135,7 +151,7 @@ export default function UsersTable() {
           />
         </div>
         {actualTableMeta.page !== actualTableMeta.pages &&
-          <Button variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
+          <Button className= {styles.load_more_btn + " mt-3 mb-3"} variant="info" disabled={fetchLoading ? true : false} onClick={handleClickButton}>
             {fetchLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : 'Carregar mais'}
           </Button>}
         <UserModal modalUserData={modalUserData} setmodalUserData={setmodalUserData} tableContent={tableContent} settableContent={settableContent} showUserModal={showUserModal} setShowUserModal={setShowUserModal} />
